@@ -16,12 +16,7 @@ import {
 	__experimentalUseBlockWrapperProps as useBlockWrapperProps,
 } from '@wordpress/block-editor';
 import { useDispatch, withSelect, withDispatch } from '@wordpress/data';
-import {
-	PanelBody,
-	ToggleControl,
-	Toolbar,
-	ToolbarGroup,
-} from '@wordpress/components';
+import { PanelBody, ToggleControl, ToolbarGroup } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 
@@ -122,7 +117,7 @@ function Navigation( {
 	return (
 		<>
 			<BlockControls>
-				<Toolbar
+				<ToolbarGroup
 					icon={
 						attributes.itemsJustification
 							? navIcons[
