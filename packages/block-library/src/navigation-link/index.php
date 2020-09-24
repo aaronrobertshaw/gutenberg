@@ -109,26 +109,18 @@ function render_block_core_navigation_link( $attributes, $content, $block ) {
 		return '';
 	}
 
-	$colors          = block_core_navigation_link_build_css_colors( $block->context );
-	$font_sizes      = block_core_navigation_link_build_css_font_sizes( $block->context );
-	$classes         = array_merge(
-		$colors['css_classes'],
-		$font_sizes['css_classes']
-	);
-	$style_attribute = ( $colors['inline_styles'] || $font_sizes['inline_styles'] );
-
-	$css_classes = trim( implode( ' ', $classes ) );
+	$font_sizes  = block_core_navigation_link_build_css_font_sizes( $block->context );
+	$css_classes = trim( implode( ' ', $font_sizes['css_classes'] ) );
 	$has_submenu = count( $block->inner_blocks ) > 0;
 	$is_active   = ! empty( $attributes['id'] ) && ( get_the_ID() === $attributes['id'] );
-
-	$class_name = ! empty( $attributes['className'] ) ? implode( ' ', (array) $attributes['className'] ) : false;
+	$class_name  = ! empty( $attributes['className'] ) ? implode( ' ', (array) $attributes['className'] ) : false;
 
 	if ( false !== $class_name ) {
 		$css_classes .= ' ' . $class_name;
 	};
 
 	$html = '<li class="' . esc_attr( $css_classes . ( $has_submenu ? ' has-child' : '' ) ) .
-		( $is_active ? ' current-menu-item' : '' ) . '"' . $style_attribute . '>' .
+		( $is_active ? ' current-menu-item' : '' ) . '"' . $font_sizes['inline_styles'] . '>' .
 		'<a class="wp-block-navigation-link__content" ';
 
 	// Start appending HTML attributes to anchor tag.

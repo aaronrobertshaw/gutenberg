@@ -42,22 +42,31 @@ const ColorSelectorIcon = ( { style, className } ) => {
 /**
  * Renders the Colors Selector Toolbar with the icon button.
  *
- * @param {Object} props                 Component properties.
- * @param {Object} props.TextColor       Text color component that wraps icon.
- * @param {Object} props.BackgroundColor Background color component that wraps icon.
+ * @param {Object} props                    Component properties.
+ * @param {Object} props.TextColor          Text color component that wraps icon.
+ * @param {Object} props.BackgroundColor    Background color component that wraps icon.
+ * @param {string} props.rgbTextColor       RGB value for text color.
+ * @param {string} props.rgbBackgroundColor RGB value Background color.
  *
  * @return {*} React toggle button component.
  */
-const renderToggleComponent = ( { TextColor, BackgroundColor } ) => ( {
-	onToggle,
-	isOpen,
-} ) => {
+const renderToggleComponent = ( {
+	TextColor,
+	BackgroundColor,
+	rgbTextColor,
+	rgbBackgroundColor,
+} ) => ( { onToggle, isOpen } ) => {
 	const openOnArrowDown = ( event ) => {
 		if ( ! isOpen && event.keyCode === DOWN ) {
 			event.preventDefault();
 			event.stopPropagation();
 			onToggle();
 		}
+	};
+
+	const styles = {
+		color: rgbTextColor,
+		backgroundColor: rgbBackgroundColor,
 	};
 
 	return (
@@ -70,7 +79,7 @@ const renderToggleComponent = ( { TextColor, BackgroundColor } ) => ( {
 				icon={
 					<BackgroundColor>
 						<TextColor>
-							<ColorSelectorIcon />
+							<ColorSelectorIcon style={ styles } />
 						</TextColor>
 					</BackgroundColor>
 				}

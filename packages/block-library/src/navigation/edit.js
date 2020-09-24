@@ -1,19 +1,19 @@
 /**
  * External dependencies
  */
-import { upperFirst } from 'lodash';
+import { find, get, upperFirst } from 'lodash';
 import classnames from 'classnames';
-
 /**
  * WordPress dependencies
  */
-import { useRef, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import {
 	InnerBlocks,
 	InspectorControls,
 	BlockControls,
 	__experimentalUseColors,
 	__experimentalUseBlockWrapperProps as useBlockWrapperProps,
+	__experimentalUseEditorFeature as useEditorFeature,
 } from '@wordpress/block-editor';
 import { useDispatch, withSelect, withDispatch } from '@wordpress/data';
 import { PanelBody, ToggleControl, ToolbarGroup } from '@wordpress/components';
@@ -50,8 +50,6 @@ function Navigation( {
 
 	const { selectBlock } = useDispatch( 'core/block-editor' );
 
-	const blockProps = useBlockWrapperProps();
-
 	const { TextColor, BackgroundColor, ColorPanel } = __experimentalUseColors(
 		[
 			{ name: 'textColor', property: 'color' },
@@ -74,6 +72,39 @@ function Navigation( {
 	const { navigatorToolbarButton, navigatorModal } = useBlockNavigator(
 		clientId
 	);
+
+	// Determine actual colors so user selection can be enforced.
+	const {
+		textColor,
+		customTextColor,
+		backgroundColor,
+		customBackgroundColor,
+	} = attributes;
+
+	const colors = useEditorFeature( 'color.palette' );
+	const getColorBySlug = ( slug, customColor ) => {
+		return customColor || get( find( colors, { slug } ), 'color' ) || null;
+	};
+
+	const rgbTextColor = getColorBySlug( textColor, customTextColor );
+	const rgbBackgroundColor = getColorBySlug(
+		backgroundColor,
+		customBackgroundColor
+	);
+
+	useEffect( () => {
+		setAttributes( {
+			customTextColor: rgbTextColor,
+			customBackgroundColor: rgbBackgroundColor,
+		} );
+	}, [ rgbTextColor, rgbBackgroundColor, setAttributes ] );
+
+	const blockProps = useBlockWrapperProps( {
+		style: {
+			color: customTextColor,
+			backgroundColor: customBackgroundColor,
+		},
+	} );
 
 	//
 	// HANDLERS
@@ -155,6 +186,8 @@ function Navigation( {
 				<BlockColorsStyleSelector
 					TextColor={ TextColor }
 					BackgroundColor={ BackgroundColor }
+					rgbTextColor={ rgbTextColor }
+					rgbBackgroundColor={ rgbBackgroundColor }
 				>
 					{ ColorPanel }
 				</BlockColorsStyleSelector>
